@@ -33,8 +33,19 @@ jobs:
             echo ${{ secrets.KEY_STORE }} | base64 --decode > key.jks
           fi
           
-      - name: Debug mavenLocal
-        run: find ~/.m2/repository/io/github/libxposed -name "*.pom" | sort
+      - name: Build dependencies
+        working-directory: libxposed
+        run: |
+          set -e
+          echo 'org.gradle.caching=true' >> ~/.gradle/gradle.properties
+          echo 'org.gradle.parallel=true' >> ~/.gradle/gradle.properties
+          echo 'org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8 -XX:+UseParallelGC' >> ~/.gradle/gradle.properties
+          echo 'android.native.buildOutput=verbose' >> ~/.gradle/gradle.properties
+          cd api && ./gradlew publishToMavenLocal --stacktrace
+          cd ../service && ./gradlew publishToMavenLocal --stacktrace
+
+      - name: Verify mavenLocal
+        run: find ~/.m2/repository/io/github/libxposed -type f | sort
         
       - name: Checkout libxposed/api
         uses: actions/checkout@v4
