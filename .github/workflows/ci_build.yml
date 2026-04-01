@@ -32,7 +32,10 @@ jobs:
             echo androidStoreFile='key.jks' >> gradle.properties
             echo ${{ secrets.KEY_STORE }} | base64 --decode > key.jks
           fi
-
+          
+      - name: Debug mavenLocal
+        run: find ~/.m2/repository/io/github/libxposed -name "*.pom" | sort
+        
       - name: Checkout libxposed/api
         uses: actions/checkout@v4
         with:
