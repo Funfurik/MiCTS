@@ -34,7 +34,6 @@ jobs:
           fi
           
       - name: Build dependencies
-        working-directory: libxposed
         run: |
           set -e
           echo 'org.gradle.caching=true' >> ~/.gradle/gradle.properties
